@@ -5,6 +5,9 @@ const {open} = require("sqlite");
 const sqlite3 = require("sqlite3");
 const dbPath = path.join(__dirname,"userdata.db");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
+
+app.use(cors());
 
 let db = null;
 
@@ -64,7 +67,6 @@ app.get("/loanDetails/:name", async(request,response) => {
         else {
             response.send("user exists in records")
         }
-        
         
     }
 })
