@@ -28,7 +28,7 @@ app.get("/userdata/:username", async (request,response) => {
             username: username
         }
         const jwtToken = jwt.sign(payLoad,"my_token")
-        response.send(jwtToken)
+        response.send({jwtToken})
     }
 })
 
