@@ -30,8 +30,43 @@ app.get("/userdata/:username", async (request,response) => {
 })
 
 {/* Retrieve loan details*/}
-app.get("/loanDetails", async(request,response) => {
-    
+app.get("/loanDetails/:name", async(request,response) => {
+    const {name} = request.params;
+    const getTheUserLoanDetails = `
+    SELECT *
+    FROM user_details left join loan_details on user_details.user_id = loan_details.user_id
+    WHERE name = '${name}'
+    `;
+    const runQuery = await db.get(getTheUserLoanDetails)
+    if (runQuery === undefined) {
+        response.send("Either loan not available or user not available")
+    }
+    else {
+        const checkUserIsAvailable = `
+        select *
+        from loan_of_specific_user
+        where user_id = ${runQuery.user_id}
+        `;
+        const userAvailability = await db.get(checkUserIsAvailable);
+        if (userAvailability !== undefined) {
+            const loanAmount = runQuery.amount;
+            const tenure = runQuery.tenure_in_months;
+            const monthlyAmountToPay = loanAmount / tenure;
+            for (let i = 0; i < tenure; i ++) {
+                const insertData = `
+                    insert into loan_of_specific_user(user_id,repayment_amount,repayment_status)
+                    values (${runQuery.user_id},${monthlyAmountToPay},"Paid")
+                `;
+                db.run(insertData)
+            }
+            response.send("data updated successfully")
+        }
+        else {
+            response.send("user exists in records")
+        }
+        
+        
+    }
 })
 
 
