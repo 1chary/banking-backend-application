@@ -1,0 +1,10 @@
+
+### Retrieve user data 
+
+GET http://localhost:3002/userdata/Ram 
+
+
+
+### Loan Details of specific user
+
+GET http://localhost:3002/loanDetails/Ram
