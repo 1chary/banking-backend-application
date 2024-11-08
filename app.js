@@ -1,7 +1,31 @@
 const express = require("express");
 const app = express();
+const path = require("path");
+const http = require("http");
+const {open} = require("sqlite");
+const sqlite3 = require("sqlite3")
+const dbPath = path.join(__dirname,"userdata.db")
+
+let db = null;
 
 
-app.listen(3002, () => {
-    console.log("Server running at http://localhost:3002/")
-})
+
+const initializeTheDBAndServer = async () => {
+    try {
+        db = await open ({
+            filename: dbPath,
+            driver: sqlite3.Database
+        })
+        app.listen(3002, () => {
+            console.log("Server running at http://localhost:3002/")
+        })
+    }
+    catch(e) {
+        console.log(`DB Error: ${e.message}`)
+        process.exit(1)
+    }
+
+}
+
+
+initializeTheDBAndServer()
